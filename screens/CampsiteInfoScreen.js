@@ -56,7 +56,7 @@ const CampsiteInfoScreen = ({ route }) => {
     return (
         <>
             <FlatList
-                data={comments.commentsAssay.filter(
+                data={comments.commentsArray.filter(
                     (comment) => comment.campsiteId === campsite.id
                 )}
                 renderItem={renderCommentItem}
@@ -67,7 +67,7 @@ const CampsiteInfoScreen = ({ route }) => {
                         <RenderCampsite
                             onShowModal={() => setShowModal(!showModal)}
                             campsite={campsite}
-                            isFavorite={favorites.include(campsite.id)}
+                            isFavorite={favorites.includes(campsite.id)}
                             markFavorite={() => dispatch(toggleFavorite(campsite.id))}
                         />
                         <Text style={styles.commentsTitle}>Comments</Text>

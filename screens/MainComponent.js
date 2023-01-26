@@ -16,6 +16,7 @@ import { fetchCampsites } from '../features/campsites/campsitesSlice';
 import { fetchPromotions } from '../features/promotions/promotionsSlice';
 import { fetchComments } from '../features/comments/commentsSlice';
 import ReservationScreen from './ReservationScreen';
+import FavoritesScreen from './FavoritesScreen';
 
 
 const Drawer = createDrawerNavigator();
@@ -95,12 +96,35 @@ const ReservationNavigator = () => {
     )
 };
 
+const FavoritesNavigator = () => {
+    const Stack = createStackNavigator();
+    return (
+        <Stack.Navigator screenOptions={screenOptions}>
+            <Stack.Screen
+                name="Favorite Campsites"
+                component={FavoritesScreen}
+                options={({ navigation }) => ({
+                    title: 'Favorites',
+                    headerLeft: () => (
+                        <Icon
+                            name='heart'
+                            type='font-awesome'
+                            iconStyle={StyleSheet.stackIcon}
+                            onPress={() => navigation.togglerDrawer()}
+                        />
+                    )
+                })}
+            />
+        </Stack.Navigator>
+    )
+};
+
 const DirectoryNavigator = () => {
     const Stack = createStackNavigator();
     return (
         <Stack.Navigator
             initialRouteName='Directory'
-            screenOptions={{ screenOptions }}
+            screenOptions={ screenOptions }
         >
             <Stack.Screen
                 name='Directory'
@@ -118,8 +142,8 @@ const DirectoryNavigator = () => {
                 })}
             />
             <Stack.Screen
-                name='CampsiteInfoScreen'
-                component={CapsiteInfoScreen}
+                name='CampsiteInfo'
+                component={CampsiteInfoScreen}
                 options={({ route }) => ({
                     title: route.params.campsite.name
                 })}
@@ -227,6 +251,22 @@ const Main = () => {
                         drawerIcon: ({ color }) => (
                             <Icon
                                 name='tree'
+                                type='font-awesome'
+                                size={24}
+                                iconStyle={{ width: 24 }}
+                                color={color}
+                            />
+                        )
+                    }}
+                />
+                 <Drawer.Screen
+                    name='Favorites'
+                    component={FavoritesNavigator}
+                    options={{
+                        title: 'My Favorites',
+                        drawerIcon: ({ color }) => (
+                            <Icon
+                                name='heart'
                                 type='font-awesome'
                                 size={24}
                                 iconStyle={{ width: 24 }}
