@@ -1,5 +1,5 @@
 import { useRef } from 'react';
-import { StyleSheet, Text, View , Alert, PanResponder } from 'react-native';
+import { StyleSheet, Text, View, Alert, PanResponder, Share } from 'react-native';
 import { Card, Icon } from 'react-native-elements';
 import { baseUrl } from '../../shared/baseUrl';
 import * as Animatable from 'react-native-animatable'
@@ -41,12 +41,23 @@ const RenderCampsite = (props) => {
                     { cancelable: false }
                 );
             } else if (isRightSwipe(gestureState)) {
-                return (
-                    props.onShowModal()
-                )
+                props.onShowModal()
             }
         }
     });
+
+    const shareCampsite = (title, message, url) => {
+        Share.share(
+            {
+                title,
+                message: `${title}: ${message} ${url}`,
+                url
+            },
+            {
+                dialogTitle: 'Share ' + title
+            }
+        );
+    };
 
     if (campsite) {
         return (
@@ -57,7 +68,7 @@ const RenderCampsite = (props) => {
                 ref={view}
                 {...panResponder.panHandlers}
             >
-                <Card containerStyle={ StyleSheet.cardContainer }>
+                <Card containerStyle={StyleSheet.cardContainer}>
                     <Card.Image source={{ uri: baseUrl + campsite.image }}>
                         <View style={{ justifyContent: 'center', flex: 1 }}>
                             <Text style={styles.cardText} >
@@ -75,8 +86,8 @@ const RenderCampsite = (props) => {
                             reverse
                             onPress={() =>
                                 props.isFavorte
-                                ? console.log('Already set as a favorite')
-                                : props.markFavorite()}
+                                    ? console.log('Already set as a favorite')
+                                    : props.markFavorite()}
                         />
                         <Icon
                             name='pencil'
@@ -85,6 +96,20 @@ const RenderCampsite = (props) => {
                             raised
                             reverse
                             onPress={() => props.onShowModal()}
+                        />
+                        <Icon
+                            name='share'
+                            type='font-awesome'
+                            color='#5637DD'
+                            raised
+                            reverse
+                            onPress={() => 
+                                shareCampsite(
+                                    campsite.name,
+                                    campsite.description,
+                                    baseUrl + campsite.image
+                                )
+                            }
                         />
                     </View>
                 </Card>
