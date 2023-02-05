@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react';
-import { View, StyleSheet, Scrollview, Image } from 'react-native';
+import { View, StyleSheet, ScrollView, Image } from 'react-native';
 import { CheckBox, Input, Button, Icon } from 'react-native-elements';
 import * as SecureStore from 'expo-secure-store';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
@@ -10,7 +10,6 @@ import * as ImageManipulator from 'expo-image-manipulator';
 
 
 const LoginTab = ({ navigation }) => {
-
     const [username, setUsername] = useState('');
     const [password, setPassword] = useState('');
     const [remember, setRemember] = useState(false);
@@ -28,7 +27,7 @@ const LoginTab = ({ navigation }) => {
                 })
             ).catch((error) => console.log('Could not save user info', error));
         } else {
-            SecureStore.deleteItemAsync('userinfo').catch((erro) =>
+            SecureStore.deleteItemAsync('userinfo').catch((error) =>
                 console.log('Could not delete user info', error)
             );
         }
@@ -41,7 +40,6 @@ const LoginTab = ({ navigation }) => {
                 setUsername(userinfo.username);
                 setPassword(userinfo.password);
                 setRemember(true);
-
             }
         });
     }, []);
@@ -56,7 +54,6 @@ const LoginTab = ({ navigation }) => {
                 containerStyle={styles.formInput}
                 leftIconContainerStyle={styles.formIcon}
             />
-
             <Input
                 placeholder='Password'
                 leftIcon={{ type: 'font-awesome', name: 'key' }}
@@ -65,7 +62,6 @@ const LoginTab = ({ navigation }) => {
                 containerStyle={styles.formInput}
                 leftIconContainerStyle={styles.formIcon}
             />
-
             <CheckBox
                 title='Remember Me'
                 center
@@ -86,14 +82,15 @@ const LoginTab = ({ navigation }) => {
                             iconStyle={{ marginRight: 10 }}
                         />
                     }
-                    buttonStyle={{ backgroundColor: '#56377DD' }}
+                    buttonStyle={{ backgroundColor: '#5637DD' }}
                 />
             </View>
+
             <View style={styles.formButton}>
                 <Button
                     onPress={() => navigation.navigate('Register')}
                     title='Register'
-                    type='clear'
+                    type=" clear"
                     icon={
                         <Icon
                             name='user-plus'
@@ -102,16 +99,15 @@ const LoginTab = ({ navigation }) => {
                             iconStyle={{ marginRight: 10 }}
                         />
                     }
-                    titleStyle={{ backgroundColor: 'blue' }}
+                    titleStyle={{ color: 'blue' }}
                 />
             </View>
         </View>
-
     );
 };
 
 const RegisterTab = () => {
-    const [username, setUsername] = useState
+    const [username, setUsername] = useState('');
     const [password, setPassword] = useState('');
     const [firstName, setFirstName] = useState('');
     const [lastName, setLastName] = useState('');
@@ -143,10 +139,8 @@ const RegisterTab = () => {
             );
         }
     };
-
     const getImageFromCamera = async () => {
-        const cameraPermission =
-            await ImagePicker.requestCameraPermissionsAsync();
+        const cameraPermission = await ImagePicker.requestCameraPermissionsAsync();
 
         if (cameraPermission.status === 'granted') {
             const capturedImage = await ImagePicker.launchCameraAsync({
@@ -155,50 +149,55 @@ const RegisterTab = () => {
             });
             if (!capturedImage.cancelled) {
                 console.log(capturedImage);
-                processImage(capturedImage.uri);
+                processImage(capturedImage.uri)
             }
+
         }
+    }
+     const processImage = async (imgUri) =>{
+         const processedImage =  await ImageManipulator.manipulateAsync(
+             imgUri,
+             [{
+                 resize :{width :400} 
+             }],
+             {format :ImageManipulator.SaveFormat.PNG}
+             
+        )
+        setImageUrl(processedImage.uri)
+        console.log(processedImage)
+     }
 
-    };
+      const getImageFromGallery = async () =>{
+           const mediaLibraryPermissions = await ImagePicker.requestMediaLibraryPermissionsAsync()
 
-    const getImageFromGallery = async () => {
-        const mediaLibraryPermission =
-            await ImagePicker.requestMediaLibraryPermissionsAsync();
-
-        if (mediaLibraryPermission.status === 'granted') {
-            const capturedImage = await ImagePicker.launchImageLibraryAsynch({
+           if (mediaLibraryPermissions.status === 'granted') {
+            const capturedImage = await ImagePicker.launchImageLibraryAsync({
                 allowsEditing: true,
                 aspect: [1, 1]
             });
-
+        
             if (!capturedImage.cancelled) {
                 console.log(capturedImage);
-                processImage(capturedImage.uri);
+                processImage(capturedImage.uri)
             }
         }
-    };
-
-    const processImage = async (imgUri) => {
-        const processedImage = await ImageManipulator.maniplulateAsync(
-            imageUri,
-            [{ resize: { width: 400 } }],
-            { format: ImageManipulator.SaveFormat.PNG },
-        );
-        console.log(processedImage);
-        setImageUrl(processedImage.uri);
-    }
+      }
 
     return (
-        <Scrollview>
+        <ScrollView>
+
             <View style={styles.container}>
                 <View style={styles.imageContainer}>
                     <Image
                         source={{ uri: imageUrl }}
                         loadingIndicatorSource={logo}
-                        styles={styles.image}
+                        style={styles.image}
                     />
+
                     <Button title='Camera' onPress={getImageFromCamera} />
-                    <Button title='Gallery' onPress={getImageFromGallery} />
+                    <Button  title='Gallery' onPress={getImageFromGallery}/>
+
+
                 </View>
                 <Input
                     placeholder='Username'
@@ -208,7 +207,6 @@ const RegisterTab = () => {
                     containerStyle={styles.formInput}
                     leftIconContainerStyle={styles.formIcon}
                 />
-
                 <Input
                     placeholder='Password'
                     leftIcon={{ type: 'font-awesome', name: 'key' }}
@@ -241,7 +239,6 @@ const RegisterTab = () => {
                     containerStyle={styles.formInput}
                     leftIconContainerStyle={styles.formIcon}
                 />
-
                 <CheckBox
                     title='Remember Me'
                     center
@@ -262,25 +259,28 @@ const RegisterTab = () => {
                                 iconStyle={{ marginRight: 10 }}
                             />
                         }
-                        buttonStyle={{ backgroundColor: '#56377DD' }}
+                        buttonStyle={{ backgroundColor: '#5637DD' }}
                     />
                 </View>
+
             </View>
-        </Scrollview>
-    );
+        </ScrollView>
+    )
+
 };
 
 const Tab = createBottomTabNavigator();
 
 const LoginScreen = () => {
     const tabBarOptions = {
-        activeBackground: '#5637DD',
+        activeBackgroundColor: '#5637DD',
         inactiveBackgroundColor: '#CEC8FF',
         activeTintColor: '#fff',
+        inactiveTintColor: '#808080',
         labelStyle: { fontSize: 16 }
     };
-
     return (
+
         <Tab.Navigator tabBarOptions={tabBarOptions}>
             <Tab.Screen
                 name='Login'
@@ -293,7 +293,7 @@ const LoginScreen = () => {
                                 type='font-awesome'
                                 color={props.color}
                             />
-                        )
+                        );
                     }
                 }}
             />
@@ -308,13 +308,17 @@ const LoginScreen = () => {
                                 type='font-awesome'
                                 color={props.color}
                             />
-                        )
+                        );
                     }
                 }}
             />
+
         </Tab.Navigator>
+
     )
+
 }
+
 
 const styles = StyleSheet.create({
     container: {
@@ -348,6 +352,7 @@ const styles = StyleSheet.create({
         width: 60,
         height: 60
     }
+
 });
 
 export default LoginScreen;
